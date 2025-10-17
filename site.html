@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Academia DV</title>
+<link rel="icon" href="img/favicon.png" type="image/png">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800;900&display=swap" rel="stylesheet">
+
+<style>
+/* ===================== THEME ===================== */
+:root{
+  --bg:#181a1f;
+  --text:#f2f2f2;
+  --muted:#cfcfd4;
+  --brand:#e04646;
+  --brand-700:#c33636;
+  --brand-900:#992424;
+
+  --container:1200px;
+  --header-h:78px;
+  --ribbon-h:64px;
+
+  /* Loader */
+  --logo-size:140px;
+  --bar-height:6px;
+  --bar-track:#4b4b4b;
+  --bar-fill:#eb0000;
+}
+@media (max-width:980px){
+  :root{ --header-h:72px; --ribbon-h:56px; --logo-size:120px; }
+}
+
+/* ===================== RESET & BASE ===================== */
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:"Montserrat",system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial,sans-serif;
+  overflow-x:hidden;
+}
+
+/* Scrollbar */
+*{
+  scrollbar-width:thin;
+  scrollbar-color: var(--brand) #222;
+}
+*::-webkit-scrollbar{ width:10px; height:10px }
+*::-webkit-scrollbar-track{ background:#222 }
+*::-webkit-scrollbar-thumb{ background:var(--brand); border-radius:20px; border:2px solid #222 }
+
+/* ===================== LOADER ===================== */
+.loader-wrap{
+  position:fixed; inset:0; z-index:9999;
+  display:grid; place-items:center;
+  background:#000;
+}
+.loader-inner{ text-align:center; width:fit-content; }
+.loader-logo img{
+  width:var(--logo-size); height:var(--logo-size);
+  object-fit:contain; animation:fadeIn .8s ease-out forwards;
+}
+.loader-bar{
+  position:relative;
+  width:calc(var(--logo-size) * 1.2);
+  height:var(--bar-height);
+  margin:18px auto 0;
+  border-radius:999px;
+  background:var(--bar-track);
+  overflow:hidden;
+}
+.loader-fill{
+  position:absolute; inset:0;
+  background:var(--bar-fill);
+  transform-origin:left; transform:scaleX(0);
+  animation:fillLtoR 2.5s ease-in-out forwards;
+}
+.loader-text{ margin-top:10px; color:rgba(255,255,255,.85); animation:fadeIn .8s ease-out forwards; }
+@keyframes fillLtoR{ to{ transform:scaleX(1); } }
+@keyframes fadeIn{ from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);} }
+.loader-wrap.fade-out{ opacity:0; transition:opacity .45s ease; pointer-events:none; }
+
+/* ===================== HEADER ===================== */
+.header{
+  position:sticky; top:0; z-index:90;
+  background:rgba(24,26,31,.92);
+  border-bottom:1px solid rgba(255,255,255,.06);
+  backdrop-filter:saturate(120%) blur(8px);
+}
+.nav{
+  max-width:var(--container);
+  margin:0 auto;
+  padding:0 16px;
+  min-height:var(--header-h);
+  display:grid;
+  grid-template-columns:auto 1fr auto;
+  align-items:center;
+  gap:16px;
+}
+.brand{ display:flex; align-items:center; gap:10px; color:var(--text); font-weight:800; text-decoration:none; }
+.brand img{ width:42px; height:42px; object-fit:contain; }
+.brand span{ font-size:1.02rem; letter-spacing:.2px; white-space:nowrap; }
+
+.nav-links{ list-style:none; display:flex; gap:28px; justify-self:center; }
+.nav-links a{ color:var(--muted); text-decoration:none; font-weight:800; font-size:1rem; line-height:1; padding:10px 4px; }
+.nav-links a:hover{ color:#fff; }
+
+.nav-right{ justify-self:end; display:flex; align-items:center; gap:10px; }
+.social{ display:flex; gap:10px; }
+.social a{ display:grid; place-items:center; width:36px; height:36px; border-radius:999px; background:rgba(255,255,255,.08); }
+.social a:hover{ background:rgba(255,255,255,.16); }
+.social img{ width:20px; height:20px; }
+
+.menu-toggle{ display:none; width:40px; height:40px; border-radius:10px; border:1px solid rgba(255,255,255,.14); background:transparent; color:#fff; }
+.menu-toggle svg{ width:22px; height:22px; }
+
+@media (max-width:980px){
+  .nav{ grid-template-columns:auto 1fr auto; }
+  .nav-links{
+    position:absolute; left:0; right:0; top:var(--header-h);
+    background:#1f2228; border-bottom:1px solid rgba(255,255,255,.06);
+    display:none; flex-direction:column; gap:0;
+  }
+  .nav-links a{ padding:32px 24px; border-top:1px solid rgba(255,255,255,.05); }
+  .nav-links.show{ display:flex }
+  .menu-toggle{ display:block; }
+  .brand span{ font-size:.92rem; }
+}
+
+/* ===================== HERO ===================== */
+.hero{
+  position:relative;
+  padding-bottom:var(--ribbon-h);
+  min-height:92vh;
+  display:grid;
+  align-items:center;
+  background:
+    radial-gradient(1200px 600px at 18% 20%, rgba(255,255,255,.08), transparent 55%),
+    linear-gradient(180deg,#1a1d23 0%,#16181d 100%);
+  overflow:hidden;
+}
+.hero-wrap{
+  max-width:var(--container);
+  margin:0 auto;
+  padding:0;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:28px;
+  align-items:center;
+  position:relative; z-index:2;
+}
+.hero-detail{
+  position:absolute;
+  right:-75vw;
+  width:120vw;
+  top:0vh;
+  bottom:-8vh;
+  background:linear-gradient(
+    180deg,
+    rgba(224,70,70,.92) 0%,
+    rgba(224,70,70,.82) 30%,
+    rgba(224,70,70,.64) 70%,
+    rgba(224,70,70,.56) 100%
+  );
+  transform: skewX(-16deg) translateX(20px);
+  transform-origin:top right;
+  z-index:1;
+  pointer-events:none;
+}
+.copy{ max-width:clamp(560px,45vw,720px); transform: translateY(-7px); }
+.hero-title{
+  font-weight:800; line-height:1.06;
+  font-size:clamp(2.4rem,3.6vw + 1.2rem,4.4rem);
+  margin-bottom:14px;
+}
+.hero-title .brand-word{ color:var(--brand); }
+.hero-sub{ margin-top:8px; color:#d7d7db; max-width:62ch; font-size:clamp(1.05rem,.6vw + .9rem,1.2rem); }
+.hero-cta{ margin-top:26px; display:flex; gap:14px; flex-wrap:wrap; }
+.btn{ border:0; cursor:pointer; text-decoration:none; font-weight:800; border-radius:999px; padding:16px 22px; font-size:1.05rem; transition:transform .2s ease, box-shadow .2s ease, background .2s ease }
+.btn-primary{ background:var(--brand); color:#fff; }
+.btn-primary:hover{ background:var(--brand-700); transform:translateY(-1px); box-shadow:0 10px 22px rgba(224,70,70,.28) }
+.btn-ghost{ background:transparent; color:#fff; border:1.6px solid rgba(255,255,255,.24); }
+.btn-ghost:hover{ border-color:rgba(255,255,255,.38); transform:translateY(-1px) }
+.hero-photo{ position:relative; z-index:2; display:flex; align-items:flex-end; justify-content:center; }
+.hero-photo .img{
+  width:min(40vw,640px);
+  height:auto;
+  object-fit:contain;
+  object-position:center bottom;
+  transform:translateY(2px);
+}
+
+/* ===================== FAIXA ANIMADA ===================== */
+.ribbon-wrap{ position:relative; z-index:9; margin-top:calc(-1 * var(--ribbon-h) + 2px); }
+.ribbon{
+  height:var(--ribbon-h);
+  background:var(--brand);
+  border-top:4px solid var(--brand-900);
+  border-bottom:4px solid var(--brand-900);
+  display:flex; align-items:center;
+}
+.ribbon-viewport{
+  width:100%; overflow:hidden;
+  -webkit-mask-image:linear-gradient(90deg,transparent 0%,black 8%,black 92%,transparent 100%);
+          mask-image:linear-gradient(90deg,transparent 0%,black 8%,black 92%,transparent 100%);
+}
+.ticker-track{
+  display:inline-flex; align-items:center; gap:28px; padding:0 12px; height:var(--ribbon-h);
+  animation:marquee 52s linear infinite; white-space:nowrap;
+}
+.ticker-group{ display:inline-flex; align-items:center; gap:28px; white-space:nowrap; }
+.ticker-item{ color:#fff; font-weight:900; text-transform:uppercase; letter-spacing:.4px; font-size:clamp(.92rem,2.2vw,1.08rem); }
+.ticker-dot{ opacity:.8; }
+@keyframes marquee{ from{ transform:translateX(0) } to{ transform:translateX(-50%) } }
+
+/* ===================== COMO COMEÇAR ===================== */
+.section-steps{
+  position:relative; z-index:1;
+  background:#1e2127;
+  padding:70px 16px 0px;
+}
+.section-steps .wrap{ max-width:var(--container); margin:0 auto; }
+.steps-title{
+  font-weight:900; line-height:1.04;
+  font-size:clamp(2.0rem,2.6vw + 1rem,3.2rem);
+  margin-bottom:18px;
+}
+.steps-title .brand-word{ color:var(--brand); }
+.steps-sub{ color:#d7d7db; margin-bottom:36px; }
+.cards{
+  display:grid; gap:24px; grid-template-columns:repeat(3,1fr);
+}
+.card{
+  background:#2a2e37;
+  border:1px solid #3a3f49;
+  border-radius:18px;
+  padding:24px;
+  box-shadow:0 10px 30px rgba(0,0,0,.25);
+  position:relative;
+}
+.card::after{
+  content:""; position:absolute; inset:auto 0 -1px 0; height:4px;
+  background:var(--brand); border-radius:0 0 18px 18px;
+}
+.card h3{ font-size:1.35rem; line-height:1.2; margin-bottom:10px; }
+.card h3 em{ color:var(--brand); font-style:normal; }
+.card p{ color:#d7d7db; }
+.steps-cta{ display:flex; justify-content:center; margin-top:34px; }
+
+/* ===================== SOBRE NÓS ===================== */
+.about{
+  position:relative;
+  background:#1c2026;
+  padding:90px 0;
+  overflow:hidden;
+}
+.about::before,
+.about::after{
+  content:""; position:absolute; left:0; right:0; height:46px;
+  background:radial-gradient(120% 100% at 50% 0, rgba(0,0,0,.28), transparent 70%);
+  pointer-events:none;
+}
+.about::before{ top:0; transform:translateY(-100%); }
+.about::after{ bottom:0; transform:translateY(100%); }
+.about-wrap{
+  max-width:var(--container);
+  margin:0 auto;
+  padding:0 16px;
+  display:grid;
+  grid-template-columns:1.1fr 0.9fr;
+  gap:46px;
+  align-items:center;
+}
+.about-media{
+  position:relative;
+  border-radius:14px;
+  overflow:hidden;
+  min-height:420px;
+  background:#111;
+}
+.about-media img{
+  position:absolute; inset:0;
+  width:100%; height:100%; object-fit:cover;
+  filter:contrast(1.02) saturate(1.05);
+}
+.about-media::after{
+  content:""; position:absolute; inset:0;
+  background:linear-gradient(90deg, rgba(0,0,0,.55) 0%, rgba(0,0,0,.25) 38%, rgba(0,0,0,.15) 60%, rgba(0,0,0,0) 100%),
+            linear-gradient(180deg, rgba(0,0,0,.28) 0%, rgba(0,0,0,0) 55%, rgba(0,0,0,.28) 100%);
+}
+.about-content h2{
+  font-size:clamp(2.1rem,2.6vw + 1rem,3rem);
+  line-height:1.05;
+  margin-bottom:14px;
+  font-weight:900;
+}
+.about-content h2 .brand-word{ color:var(--brand); }
+.about-content p{
+  color:#d7d7db;
+  margin-bottom:16px;
+  max-width:64ch;
+}
+.about-list{
+  display:grid; gap:12px; margin-top:10px;
+}
+.about-item{
+  display:flex; gap:10px; align-items:flex-start; color:#e9eaee;
+}
+.about-item svg{ flex:0 0 20px; margin-top:3px; }
+
+/* ===================== NOSSAS AULAS ===================== */
+.classes{
+  background:#1e2127;
+  padding:64px 0 84px;
+}
+.classes .wrap{
+  max-width:var(--container);
+  margin:0 auto;
+  padding:0 16px;
+}
+.classes h2{
+  font-weight:900;
+  font-size:clamp(2.2rem,2.6vw + 1rem,3.2rem);
+  margin-bottom:28px;
+  letter-spacing:.2px;
+}
+.classes h2 .brand-word{ color:var(--brand); }
+.class-viewport{
+  position:relative;
+  overflow:hidden;
+  -webkit-mask-image:linear-gradient(90deg,transparent 0%,black 6%,black 94%,transparent 100%);
+          mask-image:linear-gradient(90deg,transparent 0%,black 6%,black 94%,transparent 100%);
+}
+.class-track{
+  display:inline-flex;
+  gap:26px;
+  animation:marquee 30s linear infinite;
+  will-change:transform;
+}
+.class-group{ display:inline-flex; gap:26px; }
+.class-card{
+  width:clamp(280px,30vw,520px);
+  background:#2a2e37;
+  border:1px solid #3a3f49;
+  border-radius:18px;
+  padding:28px 24px 30px;
+  text-align:center;
+  position:relative;
+  box-shadow:0 14px 36px rgba(0,0,0,.28);
+}
+.class-card::after{
+  content:""; position:absolute; left:0; right:0; bottom:-1px; height:4px;
+  background:var(--brand); border-radius:0 0 18px 18px;
+}
+.class-icon{
+  width:86px; height:86px; margin:0 auto 16px;
+  border-radius:999px;
+  display:grid; place-items:center;
+  background:var(--brand);
+  box-shadow:0 10px 22px rgba(224,70,70,.35), inset 0 0 0 6px rgba(0,0,0,.20);
+  overflow:hidden;
+}
+.class-icon img{ width:56px; height:56px; object-fit:contain; filter: brightness(0) invert(1); }
+.class-title{ font-size:1.7rem; font-weight:900; margin-bottom:10px; }
+.class-desc{ color:#d7d7db; max-width:60ch; margin:0 auto; }
+.class-viewport:hover .class-track{ animation-play-state:paused; }
+.class-dots{ display:flex; justify-content:center; gap:8px; margin-top:16px }
+.class-dots span{ width:8px; height:8px; border-radius:50%; background:#a7a9b3; opacity:.7 }
+.class-dots span.active{ background:#fff; opacity:1 }
+
+/* ===================== CTA STRIP ===================== */
+.cta-strip{
+  background:linear-gradient(90deg, #e34c4c, #d74343);
+  border-top:4px solid var(--brand-900);
+  border-bottom:4px solid var(--brand-900);
+}
+.cta-strip .wrap{
+  max-width:var(--container);
+  margin:0 auto; padding:22px 16px;
+  display:grid; grid-template-columns:1fr auto; gap:20px; align-items:center;
+}
+.cta-text{ font-weight:600; line-height:1.5 }
+.cta-btn{
+  display:inline-block; background:#fff; color:#1b1b1b;
+  padding:14px 22px; border-radius:999px; font-weight:800; text-decoration:none;
+  transform:translateZ(0); transition:transform .18s ease, box-shadow .18s ease;
+}
+.cta-btn:hover{ transform:scale(1.05); box-shadow:0 12px 24px rgba(0,0,0,.20) }
+@media (max-width:980px){
+  .cta-strip .wrap{ grid-template-columns:1fr; text-align:center }
+}
+
+/* ===================== PLANOS ===================== */
+.pricing{
+  background:#1d2026;
+  padding:70px 16px 20px;
+}
+.pricing .wrap{ max-width:var(--container); margin:0 auto; }
+.pricing h2{
+  font-weight:900; font-size:clamp(2.2rem,2.6vw + 1rem,3.2rem);
+  margin-bottom:10px;
+}
+.pricing h2 .brand-word{ color:var(--brand) }
+.pricing .lead{ color:#d7d7db; margin-bottom:26px }
+.tiers{
+  display:grid; grid-template-columns:repeat(3,1fr); gap:26px;
+}
+.tier{
+  background:#2a2e37; border:1px solid #3a3f49; border-radius:18px;
+  padding:22px 22px 30px;
+  position:relative; box-shadow:0 12px 30px rgba(0,0,0,.25);
+  display: flex;
+  flex-direction: column;
+}
+.tier::after{
+  content:""; position:absolute; left:0; right:0; bottom:-1px; height:4px; background:var(--brand); border-radius:0 0 18px 18px
+}
+.tier-header{ display: flex; justify-content: space-between; align-items: center; margin-bottom:6px; }
+.tier h3{ font-size:1.3rem; }
+
+.tier .price{ display: flex; align-items: baseline; justify-content: flex-end; }
+.tier .price .currency { font-size: 1rem; font-weight: 700; color: var(--text); }
+.tier .price .value { font-size: 2.8rem; font-weight: 700; color: var(--brand); margin: 0 2px; }
+.tier .price .period { font-size: 1rem; font-weight: 700; color: var(--text); }
+
+.tier ul{
+  list-style:none; margin:14px 0 28px; display:grid; gap:10px;
+  padding-left:0;
+}
+.tier li{ color:#e8eaf1; display:flex; gap:8px; align-items:flex-start }
+.tier li::before{
+  content:""; width:8px; height:8px; background:#3ee27c;
+  border-radius:50%; margin-top:7px; flex-shrink: 0;
+}
+.tier .btn{
+  margin-top:auto;
+}
+.badge{
+  position:absolute; top:-15px; right:16px;
+  background:#fff; color:var(--brand); font-weight:900; font-size:.82rem;
+  padding:6px 12px; border-radius:999px; box-shadow:0 8px 14px rgba(0,0,0,.20)
+}
+@media (max-width:980px){
+  .tiers{ grid-template-columns:1fr; }
+}
+
+/* ===================== CONTATO / MAPA ===================== */
+.contact{
+  padding:60px 16px 70px; background:#1c2026;
+}
+.contact .wrap{ max-width:var(--container); margin:0 auto; display:grid; grid-template-columns:1.05fr 1fr; gap:26px; align-items:start }
+.contact h2{
+  font-weight:800;
+  font-size:clamp(2rem,2.2vw + 1rem,2.6rem);
+  margin-bottom:12px
+}
+.contact h2 .brand-word{ color:var(--brand) }
+.contact p{ color:#d7d7db; line-height:1.7; }
+.contact .block{ margin-top:26px; }
+.map iframe{ width:100%; height:420px; border:0; border-radius:14px }
+.contact .wa-btn{ display:inline-flex; align-items:center; gap:10px; margin-top:18px }
+.contact .wa-btn img{ width:20px; height:20px; }
+.contact .btn{ padding:14px 20px }
+@media (max-width:980px){
+  .contact .wrap{ grid-template-columns:1fr; }
+}
+
+/* ===================== FOOTER ===================== */
+.footer{
+  background:#181b20; padding:32px 16px 14px; color:#cdd1d8;
+  border-top:1px solid rgba(255,255,255,.06)
+}
+.footer .wrap{ max-width:var(--container); margin:0 auto; display:grid; grid-template-columns:2fr 1fr 1fr; gap:28px }
+.footer-brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 1rem; }
+.footer-brand img { height: 38px; width: auto; }
+.footer h4{ color:#fff; margin-bottom:12px }
+.footer a{ color:#d7d7db; text-decoration:none }
+.footer a:hover{ color:#fff }
+.footer .socials{ display:flex; gap:10px; margin-top:8px }
+.footer .socials a{ width:36px; height:36px; border-radius:999px; background:#24272d; display:grid; place-items:center }
+.footer .socials a:hover{ background:rgba(255,255,255,.16); }
+.footer .socials img { width:20px; height:20px; }
+.footer .legal{ text-align:center; margin-top:18px; font-size:.92rem; color:#a9aeb7 }
+.footer .credit{ text-align:center; margin:8px 0 0; color:#d6a15b; font-weight:800; letter-spacing:.4px }
+
+@media (max-width:980px){
+  /* ===================== MOBILE STACK & FIXES ===================== */
+  .hero-wrap{
+    grid-template-columns:1fr;
+    gap:18px;
+    padding: 30px 16px 0;
+    text-align:center;
+    place-items:center;
+    max-width:100%;
+  }
+  .copy{
+    width:100%; max-width:640px; margin-inline:auto;
+    padding-bottom: 30px;
+  }
+  .hero-title{ font-size:2rem; line-height:1.12; }
+  .hero-sub{
+    font-size:1rem; margin-top:12px; white-space: normal;
+  }
+  .hero-cta{ justify-content:center; gap:10px; }
+  .btn{ width:auto; min-width:0; padding:12px 16px; font-size:1rem; white-space:nowrap; }
+
+  .hero-detail{
+    left: 0; right: 0; top: auto; bottom: var(--ribbon-h);
+    height: 40vh; width: 100%;
+    transform: none;
+    background: linear-gradient(180deg, rgba(224,70,70,0) 0%, rgba(224,70,70,.85) 100%);
+    backdrop-filter: none;
+  }
+  .cards{ grid-template-columns:1fr; }
+  .about{ padding:10px 0; }
+  .about-wrap{ grid-template-columns:1fr; gap:22px; }
+  .about-media{ min-height:280px; }
+  .footer .wrap { grid-template-columns: 1fr; }
+
+  /* ====== HOTFIXES MOBILE + OVERFLOW + ESPAÇAMENTO ====== */
+  img, svg, video, canvas { max-width:100%; height:auto; }
+
+  .hero { min-height:auto; padding-bottom: 0; }
+  .hero-photo {
+    order:2; width:100%; margin: 0;
+  }
+  .hero-photo .img{
+    width:100%; height:auto; max-height: none;
+    object-fit:contain; object-position:center bottom;
+    transform:none;
+    display: block;
+  }
+  .section-steps, .classes, .about, .pricing, .contact { padding-left:16px; padding-right:16px; }
+  
+  /* AJUSTE: Remove a fresta entre a imagem e a faixa animada */
+  .ribbon-wrap {
+    margin-top: calc(-1 * var(--ribbon-h));
+  }
+}
+.footer a{ word-break:break-word; }
+.contact .map iframe{
+  width:100%;
+  height:420px;
+  border:0;
+  display:block;
+}
+.section-anchor{ scroll-margin-top: calc(var(--header-h) + 16px); }
+
+</style>
+</head>
+<body id="inicio">
+
+<div id="loader" class="loader-wrap">
+  <div class="loader-inner">
+    <div class="loader-logo">
+      <img src="img/logo.png" alt="Logo Academia DV" />
+    </div>
+    <div class="loader-bar"><span class="loader-fill"></span></div>
+    <p class="loader-text">Carregando...</p>
+  </div>
+</div>
+
+<header class="header">
+  <nav class="nav" aria-label="Principal">
+    <a class="brand" href="#inicio">
+      <img src="img/logo.png" alt="Logo">
+      <span>ACADEMIA <span style="color:var(--brand)">DV</span></span>
+    </a>
+
+    <ul class="nav-links" id="menu">
+      <li><a href="#inicio">Início</a></li>
+      <li><a href="#como-comecar">Como começar</a></li>
+      <li><a href="#sobre">Sobre</a></li>
+      <li><a href="#aulas">Aulas</a></li>
+      <li><a href="#planos">Planos</a></li>
+      <li><a href="#contato">Contato</a></li>
+    </ul>
+
+    <div class="nav-right">
+      <div class="social">
+        <a href="https://wa.me/5575992640474" target="_blank" aria-label="WhatsApp"><img src="img/whatsapp.png" alt=""></a>
+        <a href="https://instagram.com/academiadvfitness" target="_blank" aria-label="Instagram"><img src="img/instagram.png" alt=""></a>
+      </div>
+      <button class="menu-toggle" id="menuBtn" aria-label="Abrir menu">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+  </nav>
+</header>
+
+<section class="hero section-anchor" id="hero">
+  <div class="hero-detail" aria-hidden="true"></div>
+  <div class="hero-wrap">
+    <div class="copy">
+      <h1 class="hero-title">
+        ELEVE SEU <span class="brand-word">CORPO</span> &<br>
+        FORTALEÇA SUA <span class="brand-word">MENTE.</span>
+      </h1>
+      <p class="hero-sub">
+        Transforme a sua vida na Academia DV! Nosso time está pronto para te acompanhar com treinos personalizados e motivação de sobra.
+      </p>
+      <div class="hero-cta">
+        <a class="btn btn-primary" href="#planos">Conheça nossos planos</a>
+        <a class="btn btn-ghost" href="https://wa.me/5575992640474">Fale com a gente</a>
+      </div>
+    </div>
+    <div class="hero-photo">
+      <img class="img" src="img/modelo.png" alt="Pessoas treinando com halteres">
+    </div>
+  </div>
+</section>
+
+<div class="ribbon-wrap">
+  <div class="ribbon">
+    <div class="ribbon-viewport">
+      <div class="ticker-track">
+        <div class="ticker-group">
+          <span class="ticker-item">Musculação</span><span class="ticker-dot">•</span>
+          <span class="ticker-item">Pilates</span><span class="ticker-dot">•</span>
+          <span class="ticker-item">Zumba</span><span class="ticker-dot">•</span>
+          <span class="ticker-item">Jump</span><span class="ticker-dot">•</span>
+          <span class="ticker-item">Muay Thai</span><span class="ticker-dot">•</span>
+          <span class="ticker-item">Dança</span><span class="ticker-dot">•</span>
+          <span class="ticker-item">Funcional</span><span class="ticker-dot">•</span>
+          <span class="ticker-item">Avaliação Física</span><span class="ticker-dot">•</span>
+        </div>
+        <div class="ticker-group" aria-hidden="true">
+          <span class="ticker-item">Musculação</span><span class="ticker-dot">•</span>
+          <span class="ticker-item">Pilates</span><span class="ticker-dot">•</span>
+          <span class="ticker-item">Zumba</span><span class="ticker-dot">•</span>
+          <span class="ticker-item">Jump</span><span class="ticker-dot">•</span>
+          <span class="ticker-item">Muay Thai</span><span class="ticker-dot">•</span>
+          <span class="ticker-item">Dança</span><span class="ticker-dot">•</span>
+          <span class="ticker-item">Funcional</span><span class="ticker-dot">•</span>
+          <span class="ticker-item">Avaliação Física</span><span class="ticker-dot">•</span>
+        </div>
+        <div class="ticker-group" aria-hidden="true">
+          <span class="ticker-item">Musculação</span><span class="ticker-dot">•</span>
+          <span class="ticker-item">Pilates</span><span class="ticker-dot">•</span>
+          <span class="ticker-item">Zumba</span><span class="ticker-dot">•</span>
+          <span class="ticker-item">Jump</span><span class="ticker-dot">•</span>
+          <span class="ticker-item">Muay Thai</span><span class="ticker-dot">•</span>
+          <span class="ticker-item">Dança</span><span class="ticker-dot">•</span>
+          <span class="ticker-item">Funcional</span><span class="ticker-dot">•</span>
+          <span class="ticker-item">Avaliação Física</span><span class="ticker-dot">•</span>
+        </div>
+        <div class="ticker-group" aria-hidden="true">
+          <span class="ticker-item">Musculação</span><span class="ticker-dot">•</span>
+          <span class="ticker-item">Pilates</span><span class="ticker-dot">•</span>
+          <span class="ticker-item">Zumba</span><span class="ticker-dot">•</span>
+          <span class="ticker-item">Jump</span><span class="ticker-dot">•</span>
+          <span class="ticker-item">Muay Thai</span><span class="ticker-dot">•</span>
+          <span class="ticker-item">Dança</span><span class="ticker-dot">•</span>
+          <span class="ticker-item">Funcional</span><span class="ticker-dot">•</span>
+          <span class="ticker-item">Avaliação Física</span><span class="ticker-dot">•</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section class="section-steps section-anchor" id="como-comecar">
+  <div class="wrap">
+    <h2 class="steps-title">NÃO SABE POR ONDE <span class="brand-word">COMEÇAR?</span></h2>
+    <p class="steps-sub">Na Academia DV, você não está sozinho. Nossos profissionais estão prontos para criar um plano personalizado, de acordo com seus objetivos e ritmo.</p>
+    <div class="cards">
+      <article class="card">
+        <h3>1. Inscreva-se para uma <em>aula experimental</em></h3>
+        <p>Experimente a DV sem compromisso! Participe de uma aula gratuita e sinta o clima da nossa academia.</p>
+      </article>
+      <article class="card">
+        <h3>2. Avaliação inicial com <em>personal trainer</em></h3>
+        <p>Agende uma avaliação física completa com nossos profissionais e receba um plano personalizado.</p>
+      </article>
+      <article class="card">
+        <h3>3. Escolha seu <em>plano</em> de atendimento</h3>
+        <p>Com base na sua avaliação, escolha o plano que melhor se adapta ao seu estilo e metas.</p>
+      </article>
+    </div>
+    
+    <div class="steps-cta">
+      <a class="btn btn-primary" href="https://wa.me/5575992640474">Conheça nossos planos</a>
+    </div><br><br>
+  </div>
+</section>
+
+<section id="sobre" class="about section-anchor">
+  <div class="about-wrap">
+    <figure class="about-media" aria-hidden="true">
+      <img src="img/about.png" alt="">
+    </figure>
+    <div class="about-content">
+      <h2><span class="brand-word">SOBRE</span> NÓS</h2>
+      <p>
+        A Academia DV nasceu com o objetivo de transformar vidas através do esporte e do bem-estar.
+        Nosso compromisso é oferecer um espaço onde todos, independentemente do nível de experiência,
+        possam encontrar apoio, motivação e resultados.
+      </p>
+      <p>
+        Nossas aulas são dinâmicas e adaptadas para todos os níveis, desde iniciantes até atletas experientes.
+        Aqui, você encontra:
+      </p>
+      <div class="about-list">
+        <div class="about-item">
+          <svg viewBox="0 0 24 24" fill="none" width="20" height="20" aria-hidden="true">
+            <circle cx="12" cy="12" r="10" stroke="#7CE38B" stroke-width="2"/>
+            <path d="M7.5 12.5l3 3 6-6" stroke="#7CE38B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span>Aulas de musculação, ginástica, dança e funcional</span>
+        </div>
+        <div class="about-item">
+          <svg viewBox="0 0 24 24" fill="none" width="20" height="20" aria-hidden="true">
+            <circle cx="12" cy="12" r="10" stroke="#7CE38B" stroke-width="2"/>
+            <path d="M7.5 12.5l3 3 6-6" stroke="#7CE38B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span>Professores especializados e atenciosos</span>
+        </div>
+        <div class="about-item">
+          <svg viewBox="0 0 24 24" fill="none" width="20" height="20" aria-hidden="true">
+            <circle cx="12" cy="12" r="10" stroke="#7CE38B" stroke-width="2"/>
+            <path d="M7.5 12.5l3 3 6-6" stroke="#7CE38B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span>Ambiente familiar e motivador</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="classes section-anchor" id="aulas">
+  <div class="wrap">
+    <h2>NOSSAS <span class="brand-word">AULAS</span></h2>
+    <div class="class-viewport">
+      <div class="class-track">
+        <div class="class-group">
+          <article class="class-card">
+            <div class="class-icon"><img src="img/1.png" alt="Musculação"></div>
+            <h3 class="class-title">Musculação</h3>
+            <p class="class-desc">Desenvolva força, resistência e definição muscular com treinos personalizados e acompanhamento próximo.</p>
+          </article>
+          <article class="class-card">
+            <div class="class-icon"><img src="img/2.png" alt="Pilates"></div>
+            <h3 class="class-title">Pilates</h3>
+            <p class="class-desc">Fortaleça o core, ganhe flexibilidade e equilíbrio com exercícios de baixo impacto e alta consciência corporal.</p>
+          </article>
+          <article class="class-card">
+            <div class="class-icon"><img src="img/3.png" alt="Zumba"></div>
+            <h3 class="class-title">Zumba</h3>
+            <p class="class-desc">Aulas cheias de energia que unem dança e cardio para queimar calorias se divertindo.</p>
+          </article>
+          <article class="class-card">
+            <div class="class-icon"><img src="img/4.png" alt="Jump"></div>
+            <h3 class="class-title">Jump</h3>
+            <p class="class-desc">Trampolim individual para resistência, coordenação e alto gasto calórico com baixo impacto.</p>
+          </article>
+          <article class="class-card">
+            <div class="class-icon"><img src="img/5.png" alt="Muay Thai"></div>
+            <h3 class="class-title">Muay Thai</h3>
+            <p class="class-desc">Condicionamento completo, técnica e disciplina com treinos intensos e seguros.</p>
+          </article>
+          <article class="class-card">
+            <div class="class-icon"><img src="img/6.png" alt="Dança"></div>
+            <h3 class="class-title">Dança</h3>
+            <p class="class-desc">Ritmos variados para soltar o corpo, melhorar coordenação e se divertir enquanto treina.</p>
+          </article>
+          <article class="class-card">
+            <div class="class-icon"><img src="img/7.png" alt="Funcional"></div>
+            <h3 class="class-title">Funcional</h3>
+            <p class="class-desc">Treinos que trabalham força, mobilidade e condicionamento com exercícios multiarticulares.</p>
+          </article>
+        </div>
+        <div class="class-group" aria-hidden="true">
+          <article class="class-card"><div class="class-icon"><img src="img/1.png" alt=""></div><h3 class="class-title">Musculação</h3><p class="class-desc">Desenvolva força, resistência e definição muscular com treinos personalizados e acompanhamento próximo.</p></article>
+          <article class="class-card"><div class="class-icon"><img src="img/2.png" alt=""></div><h3 class="class-title">Pilates</h3><p class="class-desc">Fortaleça o core, ganhe flexibilidade e equilíbrio com exercícios de baixo impacto e alta consciência corporal.</p></article>
+          <article class="class-card"><div class="class-icon"><img src="img/3.png" alt=""></div><h3 class="class-title">Zumba</h3><p class="class-desc">Aulas cheias de energia que unem dança e cardio para queimar calorias se divertindo.</p></article>
+          <article class="class-card"><div class="class-icon"><img src="img/4.png" alt=""></div><h3 class="class-title">Jump</h3><p class="class-desc">Trampolim individual para resistência, coordenação e alto gasto calórico com baixo impacto.</p></article>
+          <article class="class-card"><div class="class-icon"><img src="img/5.png" alt=""></div><h3 class="class-title">Muay Thai</h3><p class="class-desc">Condicionamento completo, técnica e disciplina com treinos intensos e seguros.</p></article>
+          <article class="class-card"><div class="class-icon"><img src="img/6.png" alt=""></div><h3 class="class-title">Dança</h3><p class="class-desc">Ritmos variados para soltar o corpo, melhorar coordenação e se divertir enquanto treina.</p></article>
+          <article class="class-card"><div class="class-icon"><img src="img/7.png" alt=""></div><h3 class="class-title">Funcional</h3><p class="class-desc">Treinos que trabalham força, mobilidade e condicionamento com exercícios multiarticulares.</p></article>
+        </div>
+      </div>
+    </div>
+    <div class="class-dots" aria-hidden="true"><span class="active"></span><span></span><span></span><span></span><span></span></div>
+  </div>
+</section>
+
+<section class="cta-strip">
+  <div class="wrap">
+    <p class="cta-text">
+      Estamos prontos para ajudar você a alcançar seus objetivos de fitness e bem-estar.
+      Venha conhecer nossas instalações modernas, profissionais experientes e ambiente motivador.
+    </p>
+    <a class="cta-btn" href="https://wa.me/5575992640474">Experimente uma aula gratuita!</a>
+  </div>
+</section>
+
+<section class="pricing section-anchor" id="planos">
+  <div class="wrap">
+    <h2>ENCONTRE O <span class="brand-word">PLANO PERFEITO</span> PARA VOCÊ!</h2>
+    <p class="lead">Na Academia DV, oferecemos opções flexíveis para todos os perfis e objetivos. Escolha o plano que melhor se adapta à sua rotina e comece sua transformação hoje mesmo.</p>
+    <div class="tiers">
+      <article class="tier">
+        <div class="tier-header">
+          <h3>PLANO START</h3>
+          <div class="price">
+            <span class="currency">R$</span>
+            <span class="value">99</span>
+            <span class="period">/mês</span>
+          </div>
+        </div>
+        <ul>
+          <li>Acesso livre à musculação</li>
+          <li>Avaliação física inicial</li>
+          <li>Treino personalizado (1x)</li>
+          <li>Acompanhamento mensal</li>
+        </ul>
+        <a class="btn btn-primary" href="https://wa.me/5575992640474">Inscreva-se</a>
+      </article>
+      <article class="tier popular">
+        <span class="badge">POPULAR</span>
+        <div class="tier-header">
+          <h3>PLANO PLUS</h3>
+          <div class="price">
+            <span class="currency">R$</span>
+            <span class="value">149</span>
+            <span class="period">/mês</span>
+          </div>
+        </div>
+        <ul>
+          <li>Todos os benefícios do Plano Start</li>
+          <li>Acesso ilimitado a todas as aulas coletivas (zumba, pilates, jump, muay thai e dança)</li>
+          <li>Treino personalizado atualizado a cada 2 meses</li>
+          <li>Suporte via app</li>
+        </ul>
+        <a class="btn btn-primary" href="https://wa.me/5575992640474">Inscreva-se</a>
+      </article>
+      <article class="tier best">
+        <span class="badge">MELHOR OFERTA!</span>
+        <div class="tier-header">
+          <h3>PLANO PREMIUM</h3>
+          <div class="price">
+            <span class="currency">R$</span>
+            <span class="value">199</span>
+            <span class="period">/mês</span>
+          </div>
+        </div>
+        <ul>
+          <li>Todos os benefícios do Plano Plus</li>
+          <li>Acompanhamento quinzenal com personal trainer</li>
+          <li>Plano nutricional inicial</li>
+          <li>Acesso à área VIP com equipamentos exclusivos</li>
+          <li>Descontos em eventos e workshops da academia</li>
+        </ul>
+        <a class="btn btn-primary" href="https://wa.me/5575992640474">Inscreva-se</a>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="contact section-anchor" id="contato">
+  <div class="wrap">
+    <div>
+      <h2>Fale com a gente e dê o <span class="brand-word">start</span> na sua jornada!</h2>
+      <div class="block">
+        <strong>Horário de Funcionamento</strong>
+        <p>Segunda à sexta: 05h00 às 21h00<br> Sábado: 06h00 às 11h00</p>
+      </div>
+      <div class="block">
+        <strong>Contato</strong>
+        <p>WhatsApp: (75) 9 9264-0474<br>E-mail: contato@academiadv.com.br<br>
+        Endereço: Rua Lurdes Maria, 33 — Bairro Mangabeira</p>
+      </div>
+      <a class="btn btn-primary wa-btn" href="https://wa.me/5575992640474">
+        <img src="img/whatsapp.png" alt="WhatsApp Icon">
+        Fale conosco pelo WhatsApp
+      </a>
+    </div>
+    <div class="map">
+      <iframe 
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3897.1645398059923!2d-38.9242520249449!3d-12.270928187884814!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x71437d0d8765555%3A0x628675924840b2f!2sR.%20Lourdes%20Maria%2C%2033%20-%20Mangabeira%2C%20Feira%20de%20Santana%20-%20BA%2C%2044056-552!5e0!3m2!1spt-BR!2sbr!4v1698156154332!5m2!1spt-BR!2sbr0"
+        loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="wrap">
+    <div>
+      <div class="footer-brand">
+        <img src="img/logo.png" alt="Academia DV">
+        <span>ACADEMIA <span style="color:var(--brand)">DV</span></span>
+      </div>
+      <p style="margin-top:10px">Somos mais do que um espaço de treino: somos uma comunidade movida pela paixão em transformar vidas. Acreditamos que o movimento fortalece o corpo e a mente, e nossa missão é ser o seu maior parceiro nesta jornada.</p>
+    </div>
+    <div>
+      <h4>Contato</h4>
+      <p>(75) 9 9264-0474<br>contato@academiadv.com.br</p>
+      <p style="margin-top:10px">Rua Lurdes Maria, 33<br>Bairro Mangabeira</p>
+    </div>
+    <div>
+      <h4>Navegação</h4>
+      <p><a href="#inicio">Início</a></p>
+      <p><a href="#sobre">Sobre</a></p>
+      <p><a href="#aulas">Aulas</a></p>
+      <p><a href="#planos">Planos</a></p>
+      <p><a href="#contato">Contato</a></p>
+    </div>
+  </div><br>
+  <p class="legal">© 2025 Academia DV. Todos os direitos reservados.</p><br>
+  <a href="https://api.whatsapp.com/send/?phone=557581973628&text&type=phone_number&app_absent=0"><p class="credit" >Desenvolvido por FUTURA DESIGN</p></a>
+</footer>
+
+<script>
+/* Loader */
+const LOADER_TIMEOUT = 1200;
+window.addEventListener('load', () => {
+  const loader = document.getElementById('loader');
+  setTimeout(() => {
+    loader.classList.add('fade-out');
+    setTimeout(() => loader.remove(), 500);
+  }, LOADER_TIMEOUT);
+});
+
+/* Mobile menu toggle */
+const menuBtn = document.getElementById('menuBtn');
+const menu = document.getElementById('menu');
+menuBtn.addEventListener('click', () => {
+  menu.classList.toggle('show');
+});
+
+/* Fechar menu ao clicar em link no mobile */
+menu.querySelectorAll('a').forEach(a => {
+  a.addEventListener('click', () => menu.classList.remove('show'));
+});
+
+/* Scroll suave extra (iOS fix) */
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+  a.addEventListener('click', e=>{
+    const id = a.getAttribute('href');
+    if(id.length>1){
+      e.preventDefault();
+      document.querySelector(id)?.scrollIntoView({behavior:'smooth', block:'start'});
+      history.pushState(null, '', id);
+    }
+  });
+});
+
+/* Animação dos pontos do carrossel */
+document.addEventListener('DOMContentLoaded', () => {
+  const dots = document.querySelectorAll('.class-dots span');
+  if (dots.length > 0) {
+    let currentIndex = 0;
+    setInterval(() => {
+      if(document.querySelector(".class-viewport:hover")) return;
+      dots[currentIndex].classList.remove('active');
+      currentIndex = (currentIndex + 1) % dots.length;
+      dots[currentIndex].classList.add('active');
+    }, 4000);
+  }
+});
+</script>
+
+</body>
+</html>
